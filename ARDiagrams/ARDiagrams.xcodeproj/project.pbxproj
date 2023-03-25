@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9DAC9DAF29BB45B4008E25B1 /* ChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DAC9DAE29BB45B4008E25B1 /* ChartModel.swift */; };
 		9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F429B56D3200B35F36 /* AppDelegate.swift */; };
 		9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F629B56D3200B35F36 /* SceneDelegate.swift */; };
 		9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F829B56D3200B35F36 /* ARViewController.swift */; };
@@ -18,11 +17,11 @@
 		9DB3541329B570C100B35F36 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB3541229B570C100B35F36 /* SettingsViewController.swift */; };
 		9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355AE29B76B5200B35F36 /* FocusNode */; };
 		9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355B129B7A9CB00B35F36 /* Charts */; };
+		9DEE06A229CF09FA00EBA39C /* XMLSParser in Frameworks */ = {isa = PBXBuildFile; productRef = 9DEE06A129CF09FA00EBA39C /* XMLSParser */; };
 		9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9DAC9DAE29BB45B4008E25B1 /* ChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartModel.swift; sourceTree = "<group>"; };
 		9DB353F129B56D3200B35F36 /* ARDiagrams.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARDiagrams.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DB353F429B56D3200B35F36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DB353F629B56D3200B35F36 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -44,6 +43,7 @@
 				9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */,
 				9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */,
 				9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */,
+				9DEE06A229CF09FA00EBA39C /* XMLSParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +53,6 @@
 		9DAC9DAD29BB45AB008E25B1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				9DAC9DAE29BB45B4008E25B1 /* ChartModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -160,6 +159,7 @@
 				9DB355AE29B76B5200B35F36 /* FocusNode */,
 				9DB355B129B7A9CB00B35F36 /* Charts */,
 				9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */,
+				9DEE06A129CF09FA00EBA39C /* XMLSParser */,
 			);
 			productName = ARDiagrams;
 			productReference = 9DB353F129B56D3200B35F36 /* ARDiagrams.app */;
@@ -222,7 +222,6 @@
 				9DB3540F29B56F9500B35F36 /* Coordinator.swift in Sources */,
 				9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */,
 				9DB3541129B56FCD00B35F36 /* AppCoordinator.swift in Sources */,
-				9DAC9DAF29BB45B4008E25B1 /* ChartModel.swift in Sources */,
 				9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */,
 				9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */,
 				9DB3541329B570C100B35F36 /* SettingsViewController.swift in Sources */,
@@ -462,6 +461,10 @@
 		9DB355B129B7A9CB00B35F36 /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Charts;
+		};
+		9DEE06A129CF09FA00EBA39C /* XMLSParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XMLSParser;
 		};
 		9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -6,11 +6,13 @@
 //
 
 import ARKit
+import SceneKit
+import UIKit
+
 import Charts
 import FocusNode
-import SceneKit
 import SmartHitTest
-import UIKit
+import XMLSParser
 
 final class ARViewController: UIViewController {
   private lazy var sceneView = ARSCNView(frame: .zero)
@@ -19,7 +21,7 @@ final class ARViewController: UIViewController {
     let configuration = makeButtonConfiguration(title: "Import")
 
     let button = UIButton(configuration: configuration)
-    button.addTarget(self, action: #selector(handleTapChartButton), for: .touchUpInside)
+    button.addTarget(self, action: #selector(importChartButton), for: .touchUpInside)
     return button
   }()
 
@@ -32,12 +34,13 @@ final class ARViewController: UIViewController {
     return button
   }()
 
-  private var chart: Chart?
-  private var chartModel: ChartModel? {
+  private var chart: Chart? {
     didSet {
       addChartButton.isEnabled = chartModel != nil
     }
   }
+  
+  private var chartModel: ChartModel? = .bar(BarChartModel(values: [[]], indexLabels: [], seriesLabels: [], colors: []))
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -129,6 +132,12 @@ final class ARViewController: UIViewController {
   }
 
   private func importChart() {
+    let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.spreadsheet])
+    documentPicker.delegate = self
+    documentPicker.allowsMultipleSelection = false
+    documentPicker.modalPresentationStyle = .fullScreen
+    present(documentPicker, animated: true, completion: nil)
+
     let colors: [UIColor] = [.red, .green, .blue, .yellow, .cyan]
 
     switch chartModel {
@@ -156,6 +165,19 @@ extension ARViewController: ARSCNViewDelegate {
   func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
     self.focusSquare.updateFocusNode()
   }
+}
+
+extension ARViewController: UIDocumentPickerDelegate {
+//  func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+//    guard controller.documentPickerMode == .import, let url = urls.first else { return }
+//
+//    guard selectedFile.startAccessingSecurityScopedResource() else { return }
+//    controller.dismiss(animated: true)
+//  }
+//
+//  func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+//    controller.dismiss(animated: true)
+//  }
 }
 
 extension ARSCNView: ARSmartHitTest {}
