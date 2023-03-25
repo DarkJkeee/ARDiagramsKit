@@ -36,11 +36,10 @@ final class ARViewController: UIViewController {
 
   private var chart: Chart? {
     didSet {
-      addChartButton.isEnabled = chartModel != nil
+      oldValue?.removeFromParentNode()
+      addChartButton.isEnabled = chart != nil
     }
   }
-  
-  private var chartModel: ChartModel? = .bar(BarChartModel(values: [[]], indexLabels: [], seriesLabels: [], colors: []))
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -140,15 +139,21 @@ final class ARViewController: UIViewController {
 
     let colors: [UIColor] = [.red, .green, .blue, .yellow, .cyan]
 
+    let chartModel: ChartModel? = .bar(BarChartModel(values: [[]], indexLabels: [], seriesLabels: [], colors: []))
     switch chartModel {
     case .bar(_):
-      let barChart = BarChart(values: [[2, 3], [4, 5]], barColors: colors, seriesLabels: ["", ""], indexLabels: ["", ""])
-      barChart.size = SCNVector3(x: 0.1, y: 0.1, z: 0.1)
+      let barChart = BarChart(
+        values: [[2, 3, 5, 7], [4, 5, 7, 8]],
+        barColors: colors,
+        seriesLabels: ["series 1", "series 2"],
+        indexLabels: ["index 1", "index 2", "index 3", "index 4"],
+        size: SCNVector3(x: 0.1, y: 0.1, z: 0.1)
+      )
       chart = barChart
     case .pie(_):
       chart = PieChart(values: [30, 46, 21, 10, 24], colors: colors)
     case .none:
-      return
+      chart = nil
     }
   }
 

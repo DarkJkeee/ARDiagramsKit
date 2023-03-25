@@ -9,27 +9,22 @@ import Foundation
 import SceneKit
 
 class ARChartLabel: SCNNode {
-  enum LabelType {
-    case index
-    case series
-  }
-
-  let type: LabelType
-  let id: Int
-
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
-  init(text: SCNText, type: LabelType, id: Int, backgroundColor: UIColor) {
-    self.type = type
-    self.id = id
-
+  init(text: String, backgroundColor: UIColor) {
     super.init()
-    self.geometry = text
 
-    let backgroundWidth = CGFloat(1.05 * (text.boundingBox.max.x - text.boundingBox.min.x))
-    let backgroundHeight = CGFloat(1.2 * (text.boundingBox.max.y - text.boundingBox.min.y))
+    let textNode = SCNText(string: text, extrusionDepth: 0.0)
+    textNode.font = UIFont.systemFont(ofSize: 10.0)
+    textNode.firstMaterial!.isDoubleSided = true
+    textNode.firstMaterial!.diffuse.contents = UIColor.black
+
+    self.geometry = textNode
+
+    let backgroundWidth = CGFloat(1.05 * (textNode.boundingBox.max.x - textNode.boundingBox.min.x))
+    let backgroundHeight = CGFloat(1.2 * (textNode.boundingBox.max.y - textNode.boundingBox.min.y))
     let backgroundPlane = SCNPlane(width: backgroundWidth, height: backgroundHeight)
     backgroundPlane.cornerRadius = 0.15 * min(backgroundPlane.width, backgroundPlane.height)
     backgroundPlane.firstMaterial?.diffuse.contents = backgroundColor
