@@ -11,8 +11,8 @@ import UIKit
 
 import Charts
 import FocusNode
+import Parser
 import SmartHitTest
-import XMLSParser
 
 final class ARViewController: UIViewController {
   private lazy var sceneView = ARSCNView(frame: .zero)
@@ -139,7 +139,7 @@ final class ARViewController: UIViewController {
 
     let colors: [UIColor] = [.red, .green, .blue, .yellow, .cyan]
 
-    let chartModel: ChartModel? = .bar(BarChartModel(values: [[]], indexLabels: [], seriesLabels: [], colors: []))
+    let chartModel: ChartModel? = .pie(PieChartModel(values: [], colors: []))
     switch chartModel {
     case .bar(_):
       let barChart = BarChart(
@@ -151,7 +151,7 @@ final class ARViewController: UIViewController {
       )
       chart = barChart
     case .pie(_):
-      chart = PieChart(values: [30, 46, 21, 10, 24], colors: colors)
+      chart = PieChart(values: [30, 46, 21, 10, 24], labels: ["red", "green", "blue", "black", "yellow"], colors: colors)
     case .none:
       chart = nil
     }

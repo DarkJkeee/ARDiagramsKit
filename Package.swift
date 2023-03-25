@@ -8,11 +8,14 @@ let package = Package(
     platforms: [.iOS(.v13)],
     products: [
       .library(name: "Charts", targets: ["Charts"]),
-      .library(name: "XMLSParser", targets: ["XMLSParser"]),
+      .library(name: "Parser", targets: ["Parser"]),
     ],
-    dependencies: [],
+    dependencies: [
+      .package(url: "https://github.com/weichsel/ZIPFoundation.git", .upToNextMajor(from: "0.9.9")),
+      .package(url: "https://github.com/yahoojapan/SwiftyXMLParser.git", .upToNextMajor(from: "5.0.0")),
+    ],
     targets: [
       .target(name: "Charts"),
-      .target(name: "XMLSParser"),
+      .target(name: "Parser", dependencies: ["ZIPFoundation", "SwiftyXMLParser"]),
     ]
 )

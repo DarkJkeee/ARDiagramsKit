@@ -17,8 +17,7 @@
 		9DB3541329B570C100B35F36 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB3541229B570C100B35F36 /* SettingsViewController.swift */; };
 		9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355AE29B76B5200B35F36 /* FocusNode */; };
 		9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355B129B7A9CB00B35F36 /* Charts */; };
-		9DEE06A229CF09FA00EBA39C /* XMLSParser in Frameworks */ = {isa = PBXBuildFile; productRef = 9DEE06A129CF09FA00EBA39C /* XMLSParser */; };
-		9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */; };
+		9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 9DBFC86C29CFC75C00C2A04C /* Parser */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,8 +41,7 @@
 			files = (
 				9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */,
 				9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */,
-				9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */,
-				9DEE06A229CF09FA00EBA39C /* XMLSParser in Frameworks */,
+				9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,8 +156,7 @@
 			packageProductDependencies = (
 				9DB355AE29B76B5200B35F36 /* FocusNode */,
 				9DB355B129B7A9CB00B35F36 /* Charts */,
-				9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */,
-				9DEE06A129CF09FA00EBA39C /* XMLSParser */,
+				9DBFC86C29CFC75C00C2A04C /* Parser */,
 			);
 			productName = ARDiagrams;
 			productReference = 9DB353F129B56D3200B35F36 /* ARDiagrams.app */;
@@ -366,6 +363,7 @@
 				DEVELOPMENT_TEAM = SXY5F8F32W;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ARDiagrams/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera to access augmented reality.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -393,6 +391,7 @@
 				DEVELOPMENT_TEAM = SXY5F8F32W;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ARDiagrams/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera to access augmented reality.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -462,14 +461,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Charts;
 		};
-		9DEE06A129CF09FA00EBA39C /* XMLSParser */ = {
+		9DBFC86C29CFC75C00C2A04C /* Parser */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = XMLSParser;
-		};
-		9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9DEEFDD629CD0AFA00EBA39C /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
-			productName = ZIPFoundation;
+			productName = Parser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

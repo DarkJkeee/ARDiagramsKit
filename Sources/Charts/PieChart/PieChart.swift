@@ -9,14 +9,16 @@ import SceneKit
 
 public final class PieChart: SCNNode, Chart {
   private let values: [Double]
+  private let labels: [String]
   private let colors: [UIColor]
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
-  public init(values: [Double], colors: [UIColor]) {
+  public init(values: [Double], labels: [String], colors: [UIColor]) {
     self.values = values
+    self.labels = labels
     self.colors = colors
     super.init()
   }
@@ -71,14 +73,22 @@ public final class PieChart: SCNNode, Chart {
       boxNode.position = SCNVector3(x: 0.02, y: 0, z: 0)
 
       // Create a text node to display the slice value
-      let textGeometry = SCNText(string: "\(values[i])", extrusionDepth: 0.01)
-      let textNode = SCNNode(geometry: textGeometry)
-      textNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
-      textNode.position = SCNVector3(x: 0.06, y: 0, z: 0)
+      let valueGeometry = SCNText(string: "\(values[i])", extrusionDepth: 0.01)
+      valueGeometry.firstMaterial?.diffuse.contents = UIColor.black
+      let valueNode = SCNNode(geometry: valueGeometry)
+      valueNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
+      valueNode.position = SCNVector3(x: 0.04, y: -0.005, z: 0)
+
+      let labelGeometry = SCNText(string: labels[i], extrusionDepth: 0.01)
+      labelGeometry.firstMaterial?.diffuse.contents = UIColor.black
+      let labelNode = SCNNode(geometry: labelGeometry)
+      labelNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
+      labelNode.position = SCNVector3(x: 0.07, y: -0.005, z: 0)
 
       // Add the box and text nodes to the entry node
       entryNode.addChildNode(boxNode)
-      entryNode.addChildNode(textNode)
+      entryNode.addChildNode(valueNode)
+      entryNode.addChildNode(labelNode)
 
       // Position the entry node vertically
       entryNode.position = SCNVector3(x: 0, y: -0.02 * Float(i), z: 0)
