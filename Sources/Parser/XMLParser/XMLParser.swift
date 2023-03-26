@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Vladislav Shchukin on 25.03.2023.
 //
@@ -31,7 +31,7 @@ class XMLParser: XMLParserProtocol {
   }
 
   private func getTypeOf(chart xml: XML.Accessor) -> ChartType {
-    
+
     guard let nameElement = xml["c:chartSpace"]["c:chart"]["c:plotArea"].element else { return .unknown }
 
     if nameElement.childElements.contains(where: { $0.name == "c:pieChart" }) {
@@ -45,12 +45,21 @@ class XMLParser: XMLParserProtocol {
   }
 
   func parseBar(from xml: XML.Accessor) -> ChartModel? {
-    let rootIndElement = xml["c:chartSpace"]["c:chart"]["c:plotArea"]["c:bar3DChart"]["c:ser"][0]["c:cat"]["c:numRef"]["c:numCache"]["c:pt"]
-
     var values = [[Double]]()
     var seriesLabels = [String]()
-    let indexLabels = rootIndElement.compactMap { ind in
+
+    var rootIndElement = xml["c:chartSpace"]["c:chart"]["c:plotArea"]["c:bar3DChart"]["c:ser"][0]["c:cat"]["c:strRef"]["c:strCache"]["c:pt"]
+
+    var indexLabels = rootIndElement.compactMap { ind in
       ind["c:v"].text
+    }
+
+    if indexLabels.isEmpty {
+      rootIndElement = xml["c:chartSpace"]["c:chart"]["c:plotArea"]["c:bar3DChart"]["c:ser"][0]["c:cat"]["c:numRef"]["c:numCache"]["c:pt"]
+
+      indexLabels = rootIndElement.compactMap { ind in
+        ind["c:v"].text
+      }
     }
 
     let rootValElement = xml["c:chartSpace"]["c:chart"]["c:plotArea"]["c:bar3DChart"]["c:ser"]

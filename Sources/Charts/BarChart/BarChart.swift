@@ -145,8 +145,8 @@ public class BarChart: SCNNode, Chart {
   }
 
   private func addLabel(forSeries series: Int, atZPosition zPosition: Float, withMaxHeight maxHeight: Float) {
-    if let seriesLabelText = seriesLabels?[series] {
-      let seriesLabelNode = ARChartLabel(text: seriesLabelText, backgroundColor: .clear)
+    if let seriesLabels, series < seriesLabels.count {
+      let seriesLabelNode = ARChartLabel(text: seriesLabels[series], backgroundColor: .clear)
 
       let unscaledLabelWidth = seriesLabelNode.boundingBox.max.x - seriesLabelNode.boundingBox.min.x
       let desiredLabelWidth = size.x * 0.3
@@ -168,8 +168,8 @@ public class BarChart: SCNNode, Chart {
   }
 
   private func addLabel(forIndex index: Int, atXPosition xPosition: Float, withMaxHeight maxHeight: Float) {
-    if let indexLabelText = indexLabels?[index] {
-      let indexLabelNode = ARChartLabel(text: indexLabelText, backgroundColor: .clear)
+    if let indexLabels, index < indexLabels.count {
+      let indexLabelNode = ARChartLabel(text: indexLabels[index], backgroundColor: .clear)
 
       let unscaledLabelWidth = indexLabelNode.boundingBox.max.x - indexLabelNode.boundingBox.min.x
       let desiredLabelWidth = size.z * 0.3
