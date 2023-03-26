@@ -14,10 +14,12 @@ public enum ChartModel {
 
 public struct PieChartModel {
   public let values: [Double]
+  public let labels: [String]
   public let colors: [UIColor]
 
-  public init(values: [Double], colors: [UIColor]) {
+  public init(values: [Double], labels: [String], colors: [UIColor]) {
     self.values = values
+    self.labels = labels
     self.colors = colors
   }
 }

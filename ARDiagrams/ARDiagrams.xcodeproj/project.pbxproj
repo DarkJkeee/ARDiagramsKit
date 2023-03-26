@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8FC234D829CF19E700E99980 /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC234D729CF19E700E99980 /* Parser */; };
+		8FC234DE29CF47BD00E99980 /* SwiftyXMLParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC234DD29CF47BD00E99980 /* SwiftyXMLParser */; };
 		9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F429B56D3200B35F36 /* AppDelegate.swift */; };
 		9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F629B56D3200B35F36 /* SceneDelegate.swift */; };
 		9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F829B56D3200B35F36 /* ARViewController.swift */; };
@@ -18,6 +20,7 @@
 		9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355AE29B76B5200B35F36 /* FocusNode */; };
 		9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355B129B7A9CB00B35F36 /* Charts */; };
 		9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 9DBFC86C29CFC75C00C2A04C /* Parser */; };
+		9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +45,9 @@
 				9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */,
 				9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */,
 				9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */,
+				9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */,
+				8FC234D829CF19E700E99980 /* Parser in Frameworks */,
+				8FC234DE29CF47BD00E99980 /* SwiftyXMLParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +163,9 @@
 				9DB355AE29B76B5200B35F36 /* FocusNode */,
 				9DB355B129B7A9CB00B35F36 /* Charts */,
 				9DBFC86C29CFC75C00C2A04C /* Parser */,
+				9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */,
+				8FC234D729CF19E700E99980 /* Parser */,
+				8FC234DD29CF47BD00E99980 /* SwiftyXMLParser */,
 			);
 			productName = ARDiagrams;
 			productReference = 9DB353F129B56D3200B35F36 /* ARDiagrams.app */;
@@ -189,6 +198,7 @@
 			packageReferences = (
 				9DB355AD29B76B5200B35F36 /* XCRemoteSwiftPackageReference "ARKit-FocusNode" */,
 				9DEEFDD629CD0AFA00EBA39C /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				8FC234DC29CF47BD00E99980 /* XCRemoteSwiftPackageReference "SwiftyXMLParser" */,
 			);
 			productRefGroup = 9DB353F229B56D3200B35F36 /* Products */;
 			projectDirPath = "";
@@ -360,7 +370,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SXY5F8F32W;
+				DEVELOPMENT_TEAM = 2YW5L9733R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ARDiagrams/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera to access augmented reality.";
@@ -388,7 +398,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = SXY5F8F32W;
+				DEVELOPMENT_TEAM = 2YW5L9733R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ARDiagrams/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera to access augmented reality.";
@@ -433,6 +443,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8FC234DC29CF47BD00E99980 /* XCRemoteSwiftPackageReference "SwiftyXMLParser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/yahoojapan/SwiftyXMLParser";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		9DB355AD29B76B5200B35F36 /* XCRemoteSwiftPackageReference "ARKit-FocusNode" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maxxfrazer/ARKit-FocusNode.git";
@@ -452,6 +470,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8FC234D729CF19E700E99980 /* Parser */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Parser;
+		};
+		8FC234DD29CF47BD00E99980 /* SwiftyXMLParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FC234DC29CF47BD00E99980 /* XCRemoteSwiftPackageReference "SwiftyXMLParser" */;
+			productName = SwiftyXMLParser;
+		};
 		9DB355AE29B76B5200B35F36 /* FocusNode */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 9DB355AD29B76B5200B35F36 /* XCRemoteSwiftPackageReference "ARKit-FocusNode" */;
@@ -464,6 +491,11 @@
 		9DBFC86C29CFC75C00C2A04C /* Parser */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Parser;
+   };
+		9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9DEEFDD629CD0AFA00EBA39C /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
