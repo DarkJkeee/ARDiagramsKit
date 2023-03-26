@@ -143,7 +143,6 @@ final class ARViewController: UIViewController {
       return
     }
     if let chart {
-      chart.removeFromParentNode()
       chart.draw()
       chart.position = position
       sceneView.scene.rootNode.addChildNode(chart)

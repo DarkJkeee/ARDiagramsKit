@@ -73,21 +73,14 @@ public final class PieChart: SCNNode, Chart {
       boxNode.position = SCNVector3(x: 0.02, y: 0, z: 0)
 
       // Create a text node to display the slice value
-      let valueGeometry = SCNText(string: "\(values[i])", extrusionDepth: 0.01)
-      valueGeometry.firstMaterial?.diffuse.contents = UIColor.black
-      let valueNode = SCNNode(geometry: valueGeometry)
-      valueNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
-      valueNode.position = SCNVector3(x: 0.04, y: -0.005, z: 0)
-
-      let labelGeometry = SCNText(string: labels[i], extrusionDepth: 0.01)
+      let labelGeometry = SCNText(string: "\(values[i])    \(labels[i])", extrusionDepth: 0.01)
       labelGeometry.firstMaterial?.diffuse.contents = UIColor.black
       let labelNode = SCNNode(geometry: labelGeometry)
       labelNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
-      labelNode.position = SCNVector3(x: 0.07, y: -0.005, z: 0)
+      labelNode.position = SCNVector3(x: 0.04, y: -0.005, z: 0)
 
       // Add the box and text nodes to the entry node
       entryNode.addChildNode(boxNode)
-      entryNode.addChildNode(valueNode)
       entryNode.addChildNode(labelNode)
 
       // Position the entry node vertically
