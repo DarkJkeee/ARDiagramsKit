@@ -34,10 +34,11 @@ final class ARViewController: UIViewController {
     return button
   }()
 
-  private var chart: Chart? {
+  private var chart: Chart?
+
+  private var chartModel: ChartModel? {
     didSet {
-      oldValue?.removeFromParentNode()
-      addChartButton.isEnabled = chart != nil
+      addChartButton.isEnabled = chartModel != nil
     }
   }
 
@@ -122,6 +123,25 @@ final class ARViewController: UIViewController {
   }
 
   private func drawChart(at position: SCNVector3) {
+    switch chartModel {
+    case let .bar(chart):
+      let barChart = BarChart(
+        values: chart.values,
+        barColors: chart.colors,
+        seriesLabels: chart.seriesLabels,
+        indexLabels: chart.indexLabels,
+        size: SCNVector3(x: 0.1, y: 0.1, z: 0.1)
+      )
+      self.chart = barChart
+    case let .pie(chart):
+      self.chart = PieChart(
+        values: chart.values,
+        labels: chart.labels,
+        colors: chart.colors
+      )
+    case .none:
+      return
+    }
     if let chart {
       chart.removeFromParentNode()
       chart.draw()
@@ -136,25 +156,6 @@ final class ARViewController: UIViewController {
     documentPicker.allowsMultipleSelection = false
     documentPicker.modalPresentationStyle = .fullScreen
     present(documentPicker, animated: true, completion: nil)
-
-    let colors: [UIColor] = [.red, .green, .blue, .yellow, .cyan]
-
-    let chartModel: ChartModel? = .pie(PieChartModel(values: [], colors: []))
-    switch chartModel {
-    case .bar(_):
-      let barChart = BarChart(
-        values: [[2, 3, 5, 7], [4, 5, 7, 8]],
-        barColors: colors,
-        seriesLabels: ["series 1", "series 2"],
-        indexLabels: ["index 1", "index 2", "index 3", "index 4"],
-        size: SCNVector3(x: 0.1, y: 0.1, z: 0.1)
-      )
-      chart = barChart
-    case .pie(_):
-      chart = PieChart(values: [30, 46, 21, 10, 24], labels: ["red", "green", "blue", "black", "yellow"], colors: colors)
-    case .none:
-      chart = nil
-    }
   }
 
   @objc private func handleTapChartButton(_ sender: UIButton) {
@@ -173,16 +174,19 @@ extension ARViewController: ARSCNViewDelegate {
 }
 
 extension ARViewController: UIDocumentPickerDelegate {
-//  func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-//    guard controller.documentPickerMode == .import, let url = urls.first else { return }
-//
-//    guard selectedFile.startAccessingSecurityScopedResource() else { return }
-//    controller.dismiss(animated: true)
-//  }
-//
-//  func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-//    controller.dismiss(animated: true)
-//  }
+  func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    guard let url = urls.first else { return }
+
+    let parser = Parser()
+
+    chartModel = parser.parseXLSX(from: url)
+
+    controller.dismiss(animated: true)
+  }
+
+  func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+    controller.dismiss(animated: true)
+  }
 }
 
 extension ARSCNView: ARSmartHitTest {}
