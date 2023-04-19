@@ -10,7 +10,20 @@ import SceneKit
 public final class PieChart: SCNNode, Chart {
   private let values: [Double]
   private let labels: [String]
-  private let colors: [UIColor]
+  private var colors: [UIColor]
+
+  public var settings: ChartSettings = .init() {
+    didSet {
+      opacity = settings.opacity
+      if let colors = settings.colors {
+        self.colors = colors
+      }
+    }
+  }
+
+  public var type: ChartType {
+    .pie
+  }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -46,7 +59,7 @@ public final class PieChart: SCNNode, Chart {
 
       // Add shapes
       let shape = SCNShape(path: bezierPath, extrusionDepth: 0.02)
-      shape.firstMaterial?.diffuse.contents = colors[i]
+      shape.firstMaterial?.diffuse.contents = colors[i % colors.count]
 
       let shapeNode = SCNNode(geometry: shape)
 
@@ -68,7 +81,7 @@ public final class PieChart: SCNNode, Chart {
 
       // Create a colored box to represent the slice
       let boxGeometry = SCNBox(width: 0.01, height: 0.01, length: 0.01, chamferRadius: 0)
-      boxGeometry.firstMaterial?.diffuse.contents = colors[i]
+      boxGeometry.firstMaterial?.diffuse.contents = colors[i % colors.count]
       let boxNode = SCNNode(geometry: boxGeometry)
       boxNode.position = SCNVector3(x: 0.02, y: 0, z: 0)
 

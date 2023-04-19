@@ -10,11 +10,23 @@ import SpriteKit
 
 public class BarChart: SCNNode, Chart {
   private let values: [[Double]]
-  private let barColors: [UIColor]
-  private let size: SCNVector3
+  private var barColors: [UIColor]
 
   private var seriesLabels: [String]?
   private var indexLabels: [String]?
+
+  public var settings: ChartSettings = .init() {
+    didSet {
+      opacity = settings.opacity
+      if let colors = settings.colors {
+        barColors = colors
+      }
+    }
+  }
+
+  public var type: ChartType {
+    .bar
+  }
 
   public required init(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
@@ -24,14 +36,12 @@ public class BarChart: SCNNode, Chart {
     values: [[Double]],
     barColors: [UIColor],
     seriesLabels: [String],
-    indexLabels: [String],
-    size: SCNVector3
+    indexLabels: [String]
   ) {
     self.values = values
     self.barColors = barColors
     self.seriesLabels = seriesLabels
     self.indexLabels = indexLabels
-    self.size = size
     super.init()
   }
 
@@ -72,9 +82,9 @@ public class BarChart: SCNNode, Chart {
     let spaceBetweenLabels: Float = 0.2
 
     let sizeAvailableForBars = SCNVector3(
-      x: size.x * (1.0 - spaceBetweenLabels),
-      y: size.y,
-      z: size.z * (1.0 - spaceBetweenLabels)
+      x: settings.size.x * (1.0 - spaceBetweenLabels),
+      y: settings.size.y,
+      z: settings.size.z * (1.0 - spaceBetweenLabels)
     )
     let biggestValueRange = maxValue - minValue
 
@@ -82,8 +92,8 @@ public class BarChart: SCNNode, Chart {
     let barWidth = self.indexSize(withNumberOfIndices: maxNumberOfIndices, xSizeAvailableForBars: sizeAvailableForBars.x)
     let maxBarHeight = sizeAvailableForBars.y / Float(biggestValueRange)
 
-    let xShift = size.x * (spaceBetweenLabels - 0.5)
-    let zShift = size.z * (spaceBetweenLabels - 0.5)
+    let xShift = settings.size.x * (spaceBetweenLabels - 0.5)
+    let zShift = settings.size.z * (spaceBetweenLabels - 0.5)
     var previousZPosition: Float = 0.0
 
     for series in 0..<numberOfSeries {
@@ -149,14 +159,14 @@ public class BarChart: SCNNode, Chart {
       let seriesLabelNode = ARChartLabel(text: seriesLabels[series], backgroundColor: .clear)
 
       let unscaledLabelWidth = seriesLabelNode.boundingBox.max.x - seriesLabelNode.boundingBox.min.x
-      let desiredLabelWidth = size.x * 0.3
+      let desiredLabelWidth = settings.size.x * 0.3
       let unscaledLabelHeight = seriesLabelNode.boundingBox.max.y - seriesLabelNode.boundingBox.min.y
       let labelScale = min(desiredLabelWidth / unscaledLabelWidth, maxHeight / unscaledLabelHeight)
       seriesLabelNode.scale = SCNVector3(labelScale, labelScale, labelScale)
 
       let zShift = 0.5 * maxHeight - (maxHeight - labelScale * unscaledLabelHeight)
       let position = SCNVector3(
-        x: -0.7 * size.x,
+        x: -0.7 * settings.size.x,
         y: 0.0,
         z: zPosition + zShift
       )
@@ -172,7 +182,7 @@ public class BarChart: SCNNode, Chart {
       let indexLabelNode = ARChartLabel(text: indexLabels[index], backgroundColor: .clear)
 
       let unscaledLabelWidth = indexLabelNode.boundingBox.max.x - indexLabelNode.boundingBox.min.x
-      let desiredLabelWidth = size.z * 0.3
+      let desiredLabelWidth = settings.size.z * 0.3
       let unscaledLabelHeight = indexLabelNode.boundingBox.max.y - indexLabelNode.boundingBox.min.y
       let labelScale = min(desiredLabelWidth / unscaledLabelWidth, maxHeight / unscaledLabelHeight)
       indexLabelNode.scale = SCNVector3(labelScale, labelScale, labelScale)
@@ -181,7 +191,7 @@ public class BarChart: SCNNode, Chart {
       let position = SCNVector3(
         x: xPosition + xShift,
         y: 0.0,
-        z: -0.7 * size.z
+        z: -0.7 * settings.size.z
       )
       indexLabelNode.position = position
       indexLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, -0.5 * Float.pi, 0.0)

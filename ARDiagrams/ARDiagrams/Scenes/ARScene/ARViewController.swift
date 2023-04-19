@@ -7,6 +7,7 @@
 
 import ARKit
 import SceneKit
+import SwiftUI
 import UIKit
 
 import Charts
@@ -17,11 +18,13 @@ import SmartHitTest
 final class ARViewController: UIViewController {
   private lazy var sceneView = ARSCNView(frame: .zero)
   private lazy var focusSquare = FocusSquare()
+  private var settingsVC: UIViewController?
+
   private lazy var importButton: UIButton = {
     let configuration = makeButtonConfiguration(title: "Import")
 
     let button = UIButton(configuration: configuration)
-    button.addTarget(self, action: #selector(importChartButton), for: .touchUpInside)
+    button.addTarget(self, action: #selector(handleImportChartButton), for: .touchUpInside)
     return button
   }()
 
@@ -34,24 +37,29 @@ final class ARViewController: UIViewController {
     return button
   }()
 
-  private var chart: Chart?
+  private lazy var settingsButton: UIButton = {
+    let configuration = makeButtonConfiguration(title: "Settings")
 
-  private var chartModel: ChartModel? {
+    let button = UIButton(configuration: configuration)
+    button.addTarget(self, action: #selector(handleSettingsButton), for: .touchUpInside)
+    return button
+  }()
+
+  private var chartSettings: ChartSettings = .init()
+
+  private var chart: Chart? {
     didSet {
-      addChartButton.isEnabled = chartModel != nil
+      addChartButton.isEnabled = chart != nil
     }
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.addSubview(sceneView)
-    view.addSubview(importButton)
-    view.addSubview(addChartButton)
+    [sceneView, importButton, addChartButton, settingsButton].forEach(view.addSubview)
 
     addConstraints()
     setupScene()
-    addLightSource(ofType: .omni)
   }
 
   override func viewDidLayoutSubviews() {
@@ -75,16 +83,22 @@ final class ARViewController: UIViewController {
   }
 
   private func addConstraints() {
-    [importButton, addChartButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+    [importButton, addChartButton, settingsButton]
+      .forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+
     NSLayoutConstraint.activate([
+      importButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15),
+      importButton.trailingAnchor.constraint(equalTo: addChartButton.leadingAnchor, constant: -20),
+      importButton.widthAnchor.constraint(equalToConstant: 120),
+      importButton.heightAnchor.constraint(equalToConstant: 60),
       addChartButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
       addChartButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       addChartButton.heightAnchor.constraint(equalToConstant: 90),
       addChartButton.widthAnchor.constraint(equalToConstant: 90),
-      importButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      importButton.trailingAnchor.constraint(equalTo: addChartButton.leadingAnchor, constant: -20),
-      importButton.widthAnchor.constraint(equalToConstant: 120),
-      importButton.heightAnchor.constraint(equalToConstant: 60),
+      settingsButton.leadingAnchor.constraint(equalTo: addChartButton.trailingAnchor, constant: 20),
+      settingsButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15),
+      settingsButton.widthAnchor.constraint(equalToConstant: 120),
+      settingsButton.heightAnchor.constraint(equalToConstant: 60),
     ])
   }
 
@@ -102,47 +116,42 @@ final class ARViewController: UIViewController {
       camera.minimumExposure = -1
     }
 
-    focusSquare.viewDelegate = sceneView
-    sceneView.scene.rootNode.addChildNode(focusSquare)
-  }
-
-  private func addLightSource(ofType type: SCNLight.LightType, at position: SCNVector3? = nil) {
     let light = SCNLight()
     light.color = UIColor.white
-    light.type = type
+    light.type = .omni
     light.intensity = 1500
 
     let lightNode = SCNNode()
     lightNode.light = light
-    if let lightPosition = position {
-      lightNode.position = lightPosition
-      self.sceneView.scene.rootNode.addChildNode(lightNode)
-    } else {
-      self.sceneView.pointOfView?.addChildNode(lightNode)
-    }
+    sceneView.pointOfView?.addChildNode(lightNode)
+
+    focusSquare.viewDelegate = sceneView
+    sceneView.scene.rootNode.addChildNode(focusSquare)
   }
 
-  private func drawChart(at position: SCNVector3) {
-    switch chartModel {
+  private func setupChart(with model: ChartModel) {
+    switch model {
     case let .bar(chart):
-      let barChart = BarChart(
+      self.chart = BarChart(
         values: chart.values,
         barColors: chart.colors,
         seriesLabels: chart.seriesLabels,
-        indexLabels: chart.indexLabels,
-        size: SCNVector3(x: 0.1, y: 0.1, z: 0.1)
+        indexLabels: chart.indexLabels
       )
-      self.chart = barChart
     case let .pie(chart):
       self.chart = PieChart(
         values: chart.values,
         labels: chart.labels,
         colors: chart.colors
       )
-    case .none:
-      return
     }
+  }
+
+  private func drawChart(at position: SCNVector3) {
     if let chart {
+      chart.reset()
+      chart.removeFromParentNode()
+      chart.settings = chartSettings
       chart.draw()
       chart.position = position
       sceneView.scene.rootNode.addChildNode(chart)
@@ -157,29 +166,49 @@ final class ARViewController: UIViewController {
     present(documentPicker, animated: true, completion: nil)
   }
 
-  @objc private func handleTapChartButton(_ sender: UIButton) {
-    self.drawChart(at: self.focusSquare.position)
+  private func openSettingsScreen() {
+    settingsVC = UIHostingController(rootView: SettingsView(
+      viewModel: SettingsViewModel(
+        chartSettings: chartSettings,
+        saveChanges: { [weak self] in
+          self?.chartSettings = $0
+          self?.settingsVC?.dismiss(animated: true)
+        }
+      )
+    ))
+    if let settingsVC {
+      present(settingsVC, animated: true, completion: nil)
+    }
   }
 
-  @objc private func importChartButton(_ sender: UIButton) {
-    self.importChart()
+  @objc private func handleTapChartButton(_ sender: UIButton) {
+    drawChart(at: focusSquare.position)
+  }
+
+  @objc private func handleImportChartButton(_ sender: UIButton) {
+    importChart()
+  }
+
+  @objc private func handleSettingsButton(_ sender: UIButton) {
+    openSettingsScreen()
   }
 }
 
 extension ARViewController: ARSCNViewDelegate {
   func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-    self.focusSquare.updateFocusNode()
+    focusSquare.updateFocusNode()
   }
 }
 
 extension ARViewController: UIDocumentPickerDelegate {
   func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
     guard let url = urls.first else { return }
-
     let parser = Parser()
 
-    chartModel = parser.parseXLSX(from: url)
-
+    let chartModel = parser.parseXLSX(from: url)
+    if let chartModel {
+      setupChart(with: chartModel)
+    }
     controller.dismiss(animated: true)
   }
 

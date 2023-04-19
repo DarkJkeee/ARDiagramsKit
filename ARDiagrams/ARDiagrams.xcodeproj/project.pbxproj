@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8FC234D829CF19E700E99980 /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC234D729CF19E700E99980 /* Parser */; };
 		8FC234DE29CF47BD00E99980 /* SwiftyXMLParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC234DD29CF47BD00E99980 /* SwiftyXMLParser */; };
+		9D1595BC29DF534D00E36DD4 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1595BB29DF534D00E36DD4 /* SettingsViewModel.swift */; };
 		9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F429B56D3200B35F36 /* AppDelegate.swift */; };
 		9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F629B56D3200B35F36 /* SceneDelegate.swift */; };
 		9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F829B56D3200B35F36 /* ARViewController.swift */; };
@@ -16,7 +17,7 @@
 		9DB3540129B56D3400B35F36 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9DB353FF29B56D3400B35F36 /* LaunchScreen.storyboard */; };
 		9DB3540F29B56F9500B35F36 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB3540E29B56F9500B35F36 /* Coordinator.swift */; };
 		9DB3541129B56FCD00B35F36 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB3541029B56FCD00B35F36 /* AppCoordinator.swift */; };
-		9DB3541329B570C100B35F36 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB3541229B570C100B35F36 /* SettingsViewController.swift */; };
+		9DB3541329B570C100B35F36 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB3541229B570C100B35F36 /* SettingsView.swift */; };
 		9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355AE29B76B5200B35F36 /* FocusNode */; };
 		9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355B129B7A9CB00B35F36 /* Charts */; };
 		9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 9DBFC86C29CFC75C00C2A04C /* Parser */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9D1595BB29DF534D00E36DD4 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		9DB353F129B56D3200B35F36 /* ARDiagrams.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARDiagrams.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DB353F429B56D3200B35F36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DB353F629B56D3200B35F36 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -34,7 +36,7 @@
 		9DB3540D29B56DF900B35F36 /* ARDiagramsKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ARDiagramsKit; path = ..; sourceTree = "<group>"; };
 		9DB3540E29B56F9500B35F36 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		9DB3541029B56FCD00B35F36 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
-		9DB3541229B570C100B35F36 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		9DB3541229B570C100B35F36 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,13 +56,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9DAC9DAD29BB45AB008E25B1 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		9DB353E829B56D3200B35F36 = {
 			isa = PBXGroup;
 			children = (
@@ -82,7 +77,6 @@
 		9DB353F329B56D3200B35F36 /* ARDiagrams */ = {
 			isa = PBXGroup;
 			children = (
-				9DAC9DAD29BB45AB008E25B1 /* Models */,
 				9DB3540829B56DA400B35F36 /* App */,
 				9DB3540A29B56DC200B35F36 /* Scenes */,
 				9DB3540929B56DB300B35F36 /* Resources */,
@@ -131,7 +125,8 @@
 		9DB3540C29B56DD200B35F36 /* SettingsScene */ = {
 			isa = PBXGroup;
 			children = (
-				9DB3541229B570C100B35F36 /* SettingsViewController.swift */,
+				9DB3541229B570C100B35F36 /* SettingsView.swift */,
+				9D1595BB29DF534D00E36DD4 /* SettingsViewModel.swift */,
 			);
 			path = SettingsScene;
 			sourceTree = "<group>";
@@ -231,7 +226,8 @@
 				9DB3541129B56FCD00B35F36 /* AppCoordinator.swift in Sources */,
 				9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */,
 				9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */,
-				9DB3541329B570C100B35F36 /* SettingsViewController.swift in Sources */,
+				9DB3541329B570C100B35F36 /* SettingsView.swift in Sources */,
+				9D1595BC29DF534D00E36DD4 /* SettingsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
