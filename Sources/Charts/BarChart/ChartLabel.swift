@@ -8,7 +8,7 @@
 import Foundation
 import SceneKit
 
-class ARChartLabel: SCNNode {
+final class Label: SCNNode {
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -21,7 +21,7 @@ class ARChartLabel: SCNNode {
     textNode.firstMaterial!.isDoubleSided = true
     textNode.firstMaterial!.diffuse.contents = UIColor.black
 
-    self.geometry = textNode
+    geometry = textNode
 
     let backgroundWidth = CGFloat(1.05 * (textNode.boundingBox.max.x - textNode.boundingBox.min.x))
     let backgroundHeight = CGFloat(1.2 * (textNode.boundingBox.max.y - textNode.boundingBox.min.y))

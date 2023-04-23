@@ -57,9 +57,20 @@ public final class PieChart: SCNNode, Chart {
 
       buildSource(startAngle, endAngle, center, radius, bezierPath)
 
-      // Add shapes
       let shape = SCNShape(path: bezierPath, extrusionDepth: 0.02)
-      shape.firstMaterial?.diffuse.contents = colors[i % colors.count]
+
+      if i == colors.count {
+        let color: UIColor
+        if i % 2 == 0 {
+          color = colors[i % colors.count].darker(by: 10)
+        } else {
+          color = colors[i % colors.count].lighter(by: 10)
+        }
+        shape.firstMaterial?.diffuse.contents = color
+        colors.append(color)
+      } else {
+        shape.firstMaterial?.diffuse.contents = colors[i]
+      }
 
       let shapeNode = SCNNode(geometry: shape)
 
@@ -67,44 +78,40 @@ public final class PieChart: SCNNode, Chart {
       startAngle = endAngle
     }
 
-    // Create the legend
     let legendNode = SCNNode()
 
-    // Position the legend to the right of the pie chart
     legendNode.position = SCNVector3(x: coreNode.position.x + 0.1, y: coreNode.position.y, z: coreNode.position.z)
 
-    // Loop through the slices array and create a legend entry for each slice
     for i in 0..<values.count {
-
-      // Create a legend entry node
       let entryNode = SCNNode()
 
-      // Create a colored box to represent the slice
       let boxGeometry = SCNBox(width: 0.01, height: 0.01, length: 0.01, chamferRadius: 0)
-      boxGeometry.firstMaterial?.diffuse.contents = colors[i % colors.count]
+      boxGeometry.firstMaterial?.diffuse.contents = colors[i]
       let boxNode = SCNNode(geometry: boxGeometry)
       boxNode.position = SCNVector3(x: 0.02, y: 0, z: 0)
 
-      // Create a text node to display the slice value
       let labelGeometry = SCNText(string: "\(values[i])    \(labels[i])", extrusionDepth: 0.01)
       labelGeometry.firstMaterial?.diffuse.contents = UIColor.black
       let labelNode = SCNNode(geometry: labelGeometry)
       labelNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
       labelNode.position = SCNVector3(x: 0.04, y: -0.005, z: 0)
 
-      // Add the box and text nodes to the entry node
       entryNode.addChildNode(boxNode)
       entryNode.addChildNode(labelNode)
 
-      // Position the entry node vertically
       entryNode.position = SCNVector3(x: 0, y: -0.02 * Float(i), z: 0)
 
-      // Add the entry node to the legend node
       legendNode.addChildNode(entryNode)
     }
     addChildNode(legendNode)
 
     eulerAngles = SCNVector3(-90 * .pi / 180.0, 0, 0)
+  }
+
+  public func highlight() {
+    for node in childNodes {
+      
+    }
   }
 }
 
@@ -145,5 +152,29 @@ private func buildExpansion(
     let x4 = Double(center.x) + Double(radius) * Double(cos(radians4))
     let y4 = Double(center.y) + Double(radius) * sin(radians4)
     bezierPath4.addLine(to: CGPoint(x: x4 + osx, y: y4 + osy))
+  }
+}
+
+extension UIColor {
+  fileprivate func lighter(by percentage: CGFloat = 30.0) -> UIColor {
+    return adjustBrightness(by: abs(percentage))
+  }
+
+  fileprivate func darker(by percentage: CGFloat = 30.0) -> UIColor {
+    return adjustBrightness(by: -abs(percentage))
+  }
+
+  private func adjustBrightness(by percentage: CGFloat = 30.0) -> UIColor {
+    var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+    if self.getHue(&h, saturation: &s, brightness: &b, alpha: &a) {
+      if b < 1.0 {
+        let newB: CGFloat = max(min(b + (percentage/100.0)*b, 1.0), 0.0)
+        return UIColor(hue: h, saturation: s, brightness: newB, alpha: a)
+      } else {
+        let newS: CGFloat = min(max(s - (percentage/100.0)*s, 0.0), 1.0)
+        return UIColor(hue: h, saturation: newS, brightness: b, alpha: a)
+      }
+    }
+    return self
   }
 }

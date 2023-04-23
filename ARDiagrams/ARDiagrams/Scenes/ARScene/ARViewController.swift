@@ -58,6 +58,8 @@ final class ARViewController: UIViewController {
 
     [sceneView, importButton, addChartButton, settingsButton].forEach(view.addSubview)
 
+    let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+    self.view.addGestureRecognizer(longPressRecognizer)
     addConstraints()
     setupScene()
   }
@@ -72,6 +74,7 @@ final class ARViewController: UIViewController {
     super.viewWillAppear(animated)
 
     let configuration = ARWorldTrackingConfiguration()
+    configuration.isCollaborationEnabled = true
     configuration.planeDetection = [.horizontal, .vertical]
     sceneView.session.run(configuration)
   }
@@ -134,7 +137,7 @@ final class ARViewController: UIViewController {
     case let .bar(chart):
       self.chart = BarChart(
         values: chart.values,
-        barColors: chart.colors,
+        colors: chart.colors,
         seriesLabels: chart.seriesLabels,
         indexLabels: chart.indexLabels
       )
@@ -179,6 +182,27 @@ final class ARViewController: UIViewController {
     if let settingsVC {
       present(settingsVC, animated: true, completion: nil)
     }
+  }
+
+  @objc func handleLongPress(_ gestureRecognizer: UITapGestureRecognizer) {
+    guard gestureRecognizer.state == .began else { return }
+    
+    let longPressLocation = gestureRecognizer.location(in: self.view)
+    let selectedNode = self.sceneView.hitTest(longPressLocation, options: nil).first?.node
+    if let barNode = selectedNode as? Bar, let barChart = chart as? BarChart {
+      barChart.highlight(
+        barNode: barNode,
+        highlight: true
+      )
+    }
+    
+    let tapToUnhighlight = UITapGestureRecognizer(target: self, action: #selector(handleTapToUnhighlight))
+    self.view.addGestureRecognizer(tapToUnhighlight)
+  }
+
+  @objc func handleTapToUnhighlight(_ gestureRecognizer: UITapGestureRecognizer) {
+    (chart as? BarChart)?.unhighlight()
+    self.view.removeGestureRecognizer(gestureRecognizer)
   }
 
   @objc private func handleTapChartButton(_ sender: UIButton) {

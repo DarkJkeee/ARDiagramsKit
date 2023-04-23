@@ -6,20 +6,23 @@
 //
 
 import SceneKit
-import SpriteKit
 
 public class BarChart: SCNNode, Chart {
   private let values: [[Double]]
-  private var barColors: [UIColor]
+  private var colors: [UIColor]
+
+  private var platformNode: SCNNode?
 
   private var seriesLabels: [String]?
   private var indexLabels: [String]?
+
+  private var highlightedBarNode: Bar?
 
   public var settings: ChartSettings = .init() {
     didSet {
       opacity = settings.opacity
       if let colors = settings.colors {
-        barColors = colors
+        self.colors = colors
       }
     }
   }
@@ -34,129 +37,121 @@ public class BarChart: SCNNode, Chart {
 
   public init(
     values: [[Double]],
-    barColors: [UIColor],
+    colors: [UIColor],
     seriesLabels: [String],
     indexLabels: [String]
   ) {
     self.values = values
-    self.barColors = barColors
+    self.colors = colors
     self.seriesLabels = seriesLabels
     self.indexLabels = indexLabels
     super.init()
   }
 
-  private var numberOfSeries: Int {
-    return self.values.count
-  }
-
-  private var maxNumberOfIndices: Int? {
-    return Array(0..<numberOfSeries).map({ values[$0].count }).max()
-  }
-
-  private var minAndMaxChartValues: (minValue: Double, maxValue: Double)? {
+  public func draw() {
     var minValue = Double.greatestFiniteMagnitude
     var maxValue = Double.leastNormalMagnitude
-    var didProcessValue = false
 
     for series in 0..<values.count {
       for index in 0..<values[series].count {
-        let value = values[series][index]
-        minValue = min(minValue, value)
-        maxValue = max(maxValue, value)
-        didProcessValue = true
+        minValue = min(minValue, values[series][index])
+        maxValue = max(maxValue, values[series][index])
       }
     }
+    guard let maxNumberOfIndexes = Array(0..<values.count).map({ values[$0].count }).max(),
+          values.count > 0, minValue < maxValue else { return }
 
-    guard didProcessValue == true else {
-      return nil
-    }
+    let totalGapForSeries = getTotalGap(for: values.count)
+    let totalGapForIndexes = getTotalGap(for: maxNumberOfIndexes)
 
-    return (minValue, maxValue)
-  }
+    let platformNode = Platform(width: CGFloat(settings.size.x), length: CGFloat(settings.size.z))
 
-  public func draw() {
-    guard let maxNumberOfIndices = self.maxNumberOfIndices,
-          let minValue = self.minAndMaxChartValues?.minValue,
-          let maxValue = self.minAndMaxChartValues?.maxValue,
-          minValue < maxValue else { return }
-    let spaceBetweenLabels: Float = 0.2
+    let barWidth = settings.size.x / (Float(maxNumberOfIndexes) + totalGapForIndexes)
+    let maxBarHeight = settings.size.y / Float(maxValue - minValue)
+    let barLength = settings.size.z / (Float(values.count) + totalGapForSeries)
 
-    let sizeAvailableForBars = SCNVector3(
-      x: settings.size.x * (1.0 - spaceBetweenLabels),
-      y: settings.size.y,
-      z: settings.size.z * (1.0 - spaceBetweenLabels)
-    )
-    let biggestValueRange = maxValue - minValue
+    let shiftX = settings.size.x / -2
+    let shiftZ = settings.size.z / -2
 
-    let barLength = self.seriesSize(withNumberOfSeries: numberOfSeries, zSizeAvailableForBars: sizeAvailableForBars.z)
-    let barWidth = self.indexSize(withNumberOfIndices: maxNumberOfIndices, xSizeAvailableForBars: sizeAvailableForBars.x)
-    let maxBarHeight = sizeAvailableForBars.y / Float(biggestValueRange)
-
-    let xShift = settings.size.x * (spaceBetweenLabels - 0.5)
-    let zShift = settings.size.z * (spaceBetweenLabels - 0.5)
-    var previousZPosition: Float = 0.0
-
-    for series in 0..<numberOfSeries {
-      let zPosition = previousZPosition + barLength + barLength * (series == 0 ? 0 : 0.5)
-      var previousXPosition: Float = 0.0
-
+    var previousZ: Float = 0.0
+    for series in 0..<values.count {
+      let positionZ = previousZ + barLength + barLength * (series == 0 ? 0 : 0.5)
+      var previousX: Float = 0.0
+      
       for index in 0..<values[series].count {
-        let value = values[series][index]
-        let barHeight = Float(value) * maxBarHeight
+        let value = Float(values[series][index]) * maxBarHeight
 
-        let barBox = SCNBox(
+        let barNode = Bar(
           width: CGFloat(barWidth),
-          height: CGFloat(barHeight),
+          height: CGFloat(value),
           length: CGFloat(barLength),
-          chamferRadius: 0
+          index: index,
+          series: series,
+          color: colors[(series * values[series].count + index) % colors.count]
         )
-        let barNode = SCNNode(geometry: barBox)
         barNode.opacity = opacity
+        platformNode.addChildNode(barNode)
 
-        let yPosition = 0.5 * Float(value) * Float(maxBarHeight)
-        let startingYPosition = yPosition
-        let xPosition = previousXPosition + barWidth + barWidth * (index == 0 ? 0 : 0.5)
+        let positionX = previousX + barWidth + barWidth * (index == 0 ? 0 : 0.5)
         barNode.position = SCNVector3(
-          x: xPosition + xShift, y: Float(startingYPosition), z: zPosition + zShift
+          x: positionX + shiftX, y: 0.5 * value, z: positionZ + shiftZ
         )
-
-        let barMaterial = SCNMaterial()
-        barMaterial.diffuse.contents = barColors[(series * values[series].count + index) % barColors.count]
-        barMaterial.specular.contents = UIColor.white
-        barNode.geometry?.firstMaterial = barMaterial
-
-        self.addChildNode(barNode)
 
         if series == 0 {
-          self.addLabel(forIndex: index, atXPosition: xPosition + xShift, withMaxHeight: barWidth)
+          addLabel(forIndex: index, atXPosition: positionX + shiftX, withMaxHeight: barWidth)
         }
-        previousXPosition = xPosition
+        
+        previousX = positionX
       }
-
-      self.addLabel(forSeries: series, atZPosition: zPosition + zShift, withMaxHeight: barLength)
-      previousZPosition = zPosition
+      
+      addLabel(forSeries: series, atZPosition: positionZ + shiftZ, withMaxHeight: barLength)
+      previousZ = positionZ
     }
+    self.platformNode = platformNode
+    addChildNode(platformNode)
   }
 
-  private func seriesSize(withNumberOfSeries numberOfSeries: Int, zSizeAvailableForBars availableZSize: Float) -> Float {
-    let totalGapCoefficient: Float = Array(0 ..< numberOfSeries).reduce(0, { (total, current) -> Float in
-      total + 0.5
-    })
+  public func highlight(barNode: Bar?, highlight: Bool) {
+    guard let platformNode else { return }
+    for node in platformNode.childNodes {
+      if let barNode, let node = node as? Bar, barNode != node, let box = node.geometry as? SCNBox {
+        let startingHeight: Double = highlight ? node.height : 0
+        let finalHeight: Double = highlight ? 0 : node.height
 
-    return availableZSize / (Float(numberOfSeries) + totalGapCoefficient)
+        let boxKey = "height"
+        let nodeKey = "position.y"
+        box.addAnimation(
+          makeAnimation(keyPath: boxKey, from: startingHeight, to: finalHeight),
+          forKey: boxKey
+        )
+        node.addAnimation(
+          makeAnimation(
+            keyPath: nodeKey,
+            from: 0.5 * startingHeight,
+            to: 0.5 * finalHeight
+          ),
+          forKey: nodeKey
+        )
+      }
+    }
+
+    highlightedBarNode = barNode
   }
 
-  private func indexSize(withNumberOfIndices numberOfIndices: Int, xSizeAvailableForBars availableXSize: Float) -> Float {
-    let totalGapCoefficient: Float = Array(0 ..< numberOfIndices).reduce(0, { (total, current) -> Float in
-      total + 0.5
-    })
+  public func unhighlight() {
+    highlight(barNode: highlightedBarNode, highlight: false)
+    highlightedBarNode = nil
+  }
 
-    return availableXSize / (Float(numberOfIndices) + totalGapCoefficient)
+  private func getTotalGap(for number: Int) -> Float {
+    return Array(0..<number).reduce(0, { partialResult, _ -> Float in
+      partialResult + 0.5
+    })
   }
 
   private func addLabel(forSeries series: Int, atZPosition zPosition: Float, withMaxHeight maxHeight: Float) {
     if let seriesLabels, series < seriesLabels.count {
-      let seriesLabelNode = ARChartLabel(text: seriesLabels[series], backgroundColor: .clear)
+      let seriesLabelNode = Label(text: seriesLabels[series], backgroundColor: .clear)
 
       let unscaledLabelWidth = seriesLabelNode.boundingBox.max.x - seriesLabelNode.boundingBox.min.x
       let desiredLabelWidth = settings.size.x * 0.3
@@ -165,21 +160,20 @@ public class BarChart: SCNNode, Chart {
       seriesLabelNode.scale = SCNVector3(labelScale, labelScale, labelScale)
 
       let zShift = 0.5 * maxHeight - (maxHeight - labelScale * unscaledLabelHeight)
-      let position = SCNVector3(
-        x: -0.7 * settings.size.x,
+      seriesLabelNode.position = SCNVector3(
+        x: -0.8 * settings.size.x,
         y: 0.0,
         z: zPosition + zShift
       )
-      seriesLabelNode.position = position
       seriesLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, 0.0, 0.0)
 
-      self.addChildNode(seriesLabelNode)
+      addChildNode(seriesLabelNode)
     }
   }
 
   private func addLabel(forIndex index: Int, atXPosition xPosition: Float, withMaxHeight maxHeight: Float) {
     if let indexLabels, index < indexLabels.count {
-      let indexLabelNode = ARChartLabel(text: indexLabels[index], backgroundColor: .clear)
+      let indexLabelNode = Label(text: indexLabels[index], backgroundColor: .clear)
 
       let unscaledLabelWidth = indexLabelNode.boundingBox.max.x - indexLabelNode.boundingBox.min.x
       let desiredLabelWidth = settings.size.z * 0.3
@@ -188,15 +182,25 @@ public class BarChart: SCNNode, Chart {
       indexLabelNode.scale = SCNVector3(labelScale, labelScale, labelScale)
 
       let xShift = (maxHeight - labelScale * unscaledLabelHeight) - 0.5 * maxHeight
-      let position = SCNVector3(
+      indexLabelNode.position = SCNVector3(
         x: xPosition + xShift,
         y: 0.0,
-        z: -0.7 * settings.size.z
+        z: -0.8 * settings.size.z
       )
-      indexLabelNode.position = position
       indexLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, -0.5 * Float.pi, 0.0)
 
-      self.addChildNode(indexLabelNode)
+      addChildNode(indexLabelNode)
     }
   }
+}
+
+
+private func makeAnimation(keyPath: String, from: Double, to: Double) -> CABasicAnimation {
+  let animation = CABasicAnimation(keyPath: keyPath)
+  animation.fillMode = .forwards
+  animation.isRemovedOnCompletion = false
+  animation.fromValue = from
+  animation.toValue = to
+  animation.duration = 0.3
+  return animation
 }
