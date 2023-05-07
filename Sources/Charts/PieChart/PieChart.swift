@@ -7,32 +7,25 @@
 
 import SceneKit
 
-public final class PieChart: SCNNode, Chart {
-  private let values: [Double]
-  private let labels: [String]
-  private var colors: [UIColor]
+import Models
 
-  public var settings: ChartSettings = .init() {
+public final class PieChart: SCNNode, Chart {
+  public var chartModel: ChartModel? {
     didSet {
-      opacity = settings.opacity
-      if let colors = settings.colors {
-        self.colors = colors
+      if let model = chartModel?.pieChartModel {
+        self.model = model
       }
     }
   }
 
-  public var type: ChartType {
-    .pie
-  }
+  private var model: PieChartModel
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
 
-  public init(values: [Double], labels: [String], colors: [UIColor]) {
-    self.values = values
-    self.labels = labels
-    self.colors = colors
+  public init(model: PieChartModel) {
+    self.model = model
     super.init()
   }
 
@@ -42,34 +35,33 @@ public final class PieChart: SCNNode, Chart {
 
     addChildNode(coreNode)
 
-    let totalSum = values.reduce(0, +)
+    let totalSum = model.values.reduce(0, +)
     let center = CGPoint(x: 0, y: 0)
-    let radius = 0.1
 
     var startAngle = 0.0
 
-    for i in 0..<values.count {
-      let percent = values[i] / totalSum
+    for i in 0..<model.values.count {
+      let percent = model.values[i] / totalSum
 
       let endAngle = 360 * percent + startAngle
 
       let bezierPath = UIBezierPath()
 
-      buildSource(startAngle, endAngle, center, radius, bezierPath)
+      buildSource(startAngle, endAngle, center, CGFloat(model.radius), bezierPath)
 
       let shape = SCNShape(path: bezierPath, extrusionDepth: 0.02)
 
-      if i == colors.count {
+      if i == model.colors.count {
         let color: UIColor
         if i % 2 == 0 {
-          color = colors[i % colors.count].darker(by: 10)
+          color = model.colors[i % model.colors.count].darker(by: 10)
         } else {
-          color = colors[i % colors.count].lighter(by: 10)
+          color = model.colors[i % model.colors.count].lighter(by: 10)
         }
         shape.firstMaterial?.diffuse.contents = color
-        colors.append(color)
+        model.colors.append(color)
       } else {
-        shape.firstMaterial?.diffuse.contents = colors[i]
+        shape.firstMaterial?.diffuse.contents = model.colors[i]
       }
 
       let shapeNode = SCNNode(geometry: shape)
@@ -82,15 +74,15 @@ public final class PieChart: SCNNode, Chart {
 
     legendNode.position = SCNVector3(x: coreNode.position.x + 0.1, y: coreNode.position.y, z: coreNode.position.z)
 
-    for i in 0..<values.count {
+    for i in 0..<model.values.count {
       let entryNode = SCNNode()
 
       let boxGeometry = SCNBox(width: 0.01, height: 0.01, length: 0.01, chamferRadius: 0)
-      boxGeometry.firstMaterial?.diffuse.contents = colors[i]
+      boxGeometry.firstMaterial?.diffuse.contents = model.colors[i]
       let boxNode = SCNNode(geometry: boxGeometry)
       boxNode.position = SCNVector3(x: 0.02, y: 0, z: 0)
 
-      let labelGeometry = SCNText(string: "\(values[i])    \(labels[i])", extrusionDepth: 0.01)
+      let labelGeometry = SCNText(string: "\(model.values[i])    \(model.labels[i])", extrusionDepth: 0.01)
       labelGeometry.firstMaterial?.diffuse.contents = UIColor.black
       let labelNode = SCNNode(geometry: labelGeometry)
       labelNode.scale = SCNVector3(x: 0.001, y: 0.001, z: 0.001)
@@ -106,12 +98,6 @@ public final class PieChart: SCNNode, Chart {
     addChildNode(legendNode)
 
     eulerAngles = SCNVector3(-90 * .pi / 180.0, 0, 0)
-  }
-
-  public func highlight() {
-    for node in childNodes {
-      
-    }
   }
 }
 

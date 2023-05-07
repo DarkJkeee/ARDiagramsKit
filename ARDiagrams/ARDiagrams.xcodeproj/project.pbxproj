@@ -21,6 +21,11 @@
 		9DB355AF29B76B5200B35F36 /* FocusNode in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355AE29B76B5200B35F36 /* FocusNode */; };
 		9DB355B229B7A9CB00B35F36 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 9DB355B129B7A9CB00B35F36 /* Charts */; };
 		9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 9DBFC86C29CFC75C00C2A04C /* Parser */; };
+		9DE9AB8D29FD622A003E8AFF /* MessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE9AB8B29FD622A003E8AFF /* MessageLabel.swift */; };
+		9DE9AB8E29FD622A003E8AFF /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE9AB8C29FD622A003E8AFF /* MultipeerSession.swift */; };
+		9DE9AB902A005128003E8AFF /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 9DE9AB8F2A005128003E8AFF /* Models */; };
+		9DE9AB932A013151003E8AFF /* Binding+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE9AB922A013151003E8AFF /* Binding+Extensions.swift */; };
+		9DE9AB952A013E9C003E8AFF /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DE9AB942A013E9C003E8AFF /* View+Extensions.swift */; };
 		9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +42,10 @@
 		9DB3540E29B56F9500B35F36 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		9DB3541029B56FCD00B35F36 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		9DB3541229B570C100B35F36 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		9DE9AB8B29FD622A003E8AFF /* MessageLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageLabel.swift; sourceTree = "<group>"; };
+		9DE9AB8C29FD622A003E8AFF /* MultipeerSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
+		9DE9AB922A013151003E8AFF /* Binding+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+Extensions.swift"; sourceTree = "<group>"; };
+		9DE9AB942A013E9C003E8AFF /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +58,7 @@
 				9DBFC86D29CFC75C00C2A04C /* Parser in Frameworks */,
 				9DEEFDD829CD0AFA00EBA39C /* ZIPFoundation in Frameworks */,
 				8FC234D829CF19E700E99980 /* Parser in Frameworks */,
+				9DE9AB902A005128003E8AFF /* Models in Frameworks */,
 				8FC234DE29CF47BD00E99980 /* SwiftyXMLParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -77,6 +87,7 @@
 		9DB353F329B56D3200B35F36 /* ARDiagrams */ = {
 			isa = PBXGroup;
 			children = (
+				9DE9AB912A01313E003E8AFF /* Extensions */,
 				9DB3540829B56DA400B35F36 /* App */,
 				9DB3540A29B56DC200B35F36 /* Scenes */,
 				9DB3540929B56DB300B35F36 /* Resources */,
@@ -117,6 +128,8 @@
 		9DB3540B29B56DCD00B35F36 /* ARScene */ = {
 			isa = PBXGroup;
 			children = (
+				9DE9AB8B29FD622A003E8AFF /* MessageLabel.swift */,
+				9DE9AB8C29FD622A003E8AFF /* MultipeerSession.swift */,
 				9DB353F829B56D3200B35F36 /* ARViewController.swift */,
 			);
 			path = ARScene;
@@ -136,6 +149,15 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9DE9AB912A01313E003E8AFF /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9DE9AB922A013151003E8AFF /* Binding+Extensions.swift */,
+				9DE9AB942A013E9C003E8AFF /* View+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,6 +183,7 @@
 				9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */,
 				8FC234D729CF19E700E99980 /* Parser */,
 				8FC234DD29CF47BD00E99980 /* SwiftyXMLParser */,
+				9DE9AB8F2A005128003E8AFF /* Models */,
 			);
 			productName = ARDiagrams;
 			productReference = 9DB353F129B56D3200B35F36 /* ARDiagrams.app */;
@@ -223,11 +246,15 @@
 			files = (
 				9DB3540F29B56F9500B35F36 /* Coordinator.swift in Sources */,
 				9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */,
+				9DE9AB952A013E9C003E8AFF /* View+Extensions.swift in Sources */,
 				9DB3541129B56FCD00B35F36 /* AppCoordinator.swift in Sources */,
+				9DE9AB8E29FD622A003E8AFF /* MultipeerSession.swift in Sources */,
+				9DE9AB8D29FD622A003E8AFF /* MessageLabel.swift in Sources */,
 				9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */,
 				9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */,
 				9DB3541329B570C100B35F36 /* SettingsView.swift in Sources */,
 				9D1595BC29DF534D00E36DD4 /* SettingsViewModel.swift in Sources */,
+				9DE9AB932A013151003E8AFF /* Binding+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +397,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ARDiagrams/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera to access augmented reality.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This application will use local networking to discover nearby devices.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -380,7 +408,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = burstein.ARDiagrams1;
+				PRODUCT_BUNDLE_IDENTIFIER = burstein.ARDiagrams2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -399,6 +427,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ARDiagrams/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera to access augmented reality.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "This application will use local networking to discover nearby devices.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -409,7 +438,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = burstein.ARDiagrams1;
+				PRODUCT_BUNDLE_IDENTIFIER = burstein.ARDiagrams2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -489,6 +518,10 @@
 		9DBFC86C29CFC75C00C2A04C /* Parser */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Parser;
+		};
+		9DE9AB8F2A005128003E8AFF /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
 		};
 		9DEEFDD729CD0AFA00EBA39C /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

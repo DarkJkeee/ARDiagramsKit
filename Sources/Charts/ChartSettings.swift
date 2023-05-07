@@ -1,6 +1,6 @@
 //
 //  ChartSettings.swift
-//  
+//
 //
 //  Created by Gleb Burstein on 06.04.2023.
 //

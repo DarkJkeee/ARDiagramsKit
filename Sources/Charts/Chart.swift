@@ -7,9 +7,10 @@
 
 import SceneKit
 
+import Models
+
 public protocol Chart: SCNNode {
-  var type: ChartType { get }
-  var settings: ChartSettings { get set }
+  var chartModel: ChartModel? { get set }
   func draw()
   func reset()
 }

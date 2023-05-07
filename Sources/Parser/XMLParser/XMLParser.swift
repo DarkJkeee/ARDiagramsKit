@@ -5,16 +5,16 @@
 //  Created by Vladislav Shchukin on 25.03.2023.
 //
 
-import Foundation
 import UIKit
+
+import Models
 import SwiftyXMLParser
 
 protocol XMLParserProtocol: AnyObject {
   func parseChart(from: Data) -> ChartModel?
 }
 
-class XMLParser: XMLParserProtocol {
-
+final class XMLParser: XMLParserProtocol {
   func parseChart(from chartData: Data) -> ChartModel? {
     let xml = XML.parse(chartData)
     switch getTypeOf(chart: xml) {
@@ -31,7 +31,6 @@ class XMLParser: XMLParserProtocol {
   }
 
   private func getTypeOf(chart xml: XML.Accessor) -> ChartType {
-
     guard let nameElement = xml["c:chartSpace"]["c:chart"]["c:plotArea"].element else { return .unknown }
 
     if nameElement.childElements.contains(where: { $0.name == "c:pieChart" }) {
@@ -85,7 +84,16 @@ class XMLParser: XMLParserProtocol {
       )
     }
 
-    return ChartModel.bar(BarChartModel(values: values, indexLabels: indexLabels, seriesLabels: seriesLabels, colors: col))
+    return .bar(
+      BarChartModel(
+        values: values,
+        indexLabels: indexLabels,
+        seriesLabels: seriesLabels,
+        colors: col,
+        opacity: 1.0,
+        size: Size()
+      )
+    )
   }
 
   func parserPie(from xml: XML.Accessor) -> ChartModel? {
@@ -115,7 +123,9 @@ class XMLParser: XMLParserProtocol {
       PieChartModel(
         values: val,
         labels: cat,
-        colors: col
+        colors: col,
+        opacity: 1.0,
+        radius: 0.1
       )
     )
   }

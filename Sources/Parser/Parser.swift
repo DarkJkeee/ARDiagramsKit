@@ -7,6 +7,8 @@
 
 import Foundation
 
+import Models
+
 protocol ParserProtocol {
   func parseXLSX(from: URL) -> ChartModel?
 }

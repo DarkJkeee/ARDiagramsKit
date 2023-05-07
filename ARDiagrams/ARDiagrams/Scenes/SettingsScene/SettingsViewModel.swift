@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-import Charts
+import Models
 
 final class SettingsViewModel: ObservableObject {
-  enum ColorPalette {
+  typealias SaveHandler = (ChartModel) -> Void
+  private enum ColorPalette {
     static let flat: [Color] = [
       .init(red: 38 / 255, green: 55 / 255, blue: 85 / 255),
       .init(red: 94 / 255, green: 90 / 255, blue: 91 / 255),
@@ -36,19 +37,24 @@ final class SettingsViewModel: ObservableObject {
     ]
   }
 
-  typealias SaveHandler = (ChartSettings) -> Void
-
   private let saveChanges: SaveHandler
+
   let colorPalette: [[Color]] = [ColorPalette.flat, ColorPalette.vintage, ColorPalette.navy]
 
-  @Published var chartSettings: ChartSettings
+  @Published var barModel: BarChartModel?
+  @Published var pieModel: PieChartModel?
 
-  init(chartSettings: ChartSettings = .init(), saveChanges: @escaping SaveHandler) {
-    self.chartSettings = chartSettings
+  init(model: ChartModel, saveChanges: @escaping SaveHandler) {
+    self.barModel = model.barChartModel
+    self.pieModel = model.pieChartModel
     self.saveChanges = saveChanges
   }
 
   func save() {
-    saveChanges(chartSettings)
+    if let barModel {
+      saveChanges(.bar(barModel))
+    } else if let pieModel {
+      saveChanges(.pie(pieModel))
+    }
   }
 }
