@@ -13,7 +13,7 @@ final class Label: SCNNode {
     fatalError("init(coder:) has not been implemented")
   }
 
-  init(text: String, backgroundColor: UIColor) {
+  init(text: String) {
     super.init()
 
     let textNode = SCNText(string: text, extrusionDepth: 0.0)
@@ -27,7 +27,7 @@ final class Label: SCNNode {
     let backgroundHeight = CGFloat(1.2 * (textNode.boundingBox.max.y - textNode.boundingBox.min.y))
     let backgroundPlane = SCNPlane(width: backgroundWidth, height: backgroundHeight)
     backgroundPlane.cornerRadius = 0.15 * min(backgroundPlane.width, backgroundPlane.height)
-    backgroundPlane.firstMaterial?.diffuse.contents = backgroundColor
+    backgroundPlane.firstMaterial?.diffuse.contents = UIColor.clear
     let backgroundNode = SCNNode(geometry: backgroundPlane)
     backgroundNode.position = SCNVector3(0.495 * backgroundWidth, 0.7 * backgroundHeight, -0.05)
 

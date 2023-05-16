@@ -22,9 +22,10 @@ final class ARViewController: UIViewController {
     let sharedCollaborationData: Data
   }
 
+  weak var coordinator: AppCoordinator?
+
   private lazy var sceneView = ARSCNView(frame: .zero)
   private lazy var focusSquare = FocusSquare()
-  private var settingsVC: UIViewController?
 
   // Multi-user mode
   private var multipeerSession: MultipeerSession?
@@ -202,22 +203,11 @@ final class ARViewController: UIViewController {
 
   private func openSettingsScreen() {
     guard let chartModel else { return }
-    settingsVC = UIHostingController(
-      rootView: SettingsView(
-        viewModel: SettingsViewModel(
-          model: chartModel,
-          saveChanges: { [weak self] in
-            self?.chartModel = $0
-            self?.settingsVC?.dismiss(animated: true)
-            self?.chart?.reset()
-            self?.chart?.removeFromParentNode()
-          }
-        )
-      )
-    )
-    if let settingsVC {
-      present(settingsVC, animated: true, completion: nil)
-    }
+    coordinator?.openSettings(model: chartModel, saveChanges: { [weak self] in
+      self?.chartModel = $0
+      self?.chart?.reset()
+      self?.chart?.removeFromParentNode()
+    })
   }
 
   @objc func handleLongPress(_ gestureRecognizer: UITapGestureRecognizer) {

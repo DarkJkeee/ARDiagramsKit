@@ -32,6 +32,7 @@ public final class BarChart: SCNNode, Chart {
   }
 
   public func draw() {
+    opacity = model.opacity
     var minValue = Double.greatestFiniteMagnitude
     var maxValue = Double.leastNormalMagnitude
 
@@ -137,7 +138,7 @@ public final class BarChart: SCNNode, Chart {
 
   private func addLabel(forSeries series: Int, atZPosition zPosition: Float, withMaxHeight maxHeight: Float) {
     if series < model.seriesLabels.count {
-      let seriesLabelNode = Label(text: model.seriesLabels[series], backgroundColor: .clear)
+      let seriesLabelNode = Label(text: model.seriesLabels[series])
 
       let unscaledLabelWidth = seriesLabelNode.boundingBox.max.x - seriesLabelNode.boundingBox.min.x
       let desiredLabelWidth = model.size.x * 0.3
@@ -159,7 +160,7 @@ public final class BarChart: SCNNode, Chart {
 
   private func addLabel(forIndex index: Int, atXPosition xPosition: Float, withMaxHeight maxHeight: Float) {
     if index < model.indexLabels.count {
-      let indexLabelNode = Label(text: model.indexLabels[index], backgroundColor: .clear)
+      let indexLabelNode = Label(text: model.indexLabels[index])
 
       let unscaledLabelWidth = indexLabelNode.boundingBox.max.x - indexLabelNode.boundingBox.min.x
       let desiredLabelWidth = model.size.z * 0.3

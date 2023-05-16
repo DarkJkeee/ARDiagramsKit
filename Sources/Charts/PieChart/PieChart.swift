@@ -30,6 +30,7 @@ public final class PieChart: SCNNode, Chart {
   }
 
   public func draw() {
+    opacity = model.opacity
     let coreNode = SCNNode()
     coreNode.simdPosition = SIMD3(x: 0, y: 0, z: 0)
 
@@ -116,28 +117,6 @@ private func buildSource(
     let x4 = Double(center.x) + Double(radius) * Double(cos(radians4))
     let y4 = Double(center.y) + Double(radius) * sin(radians4)
     bezierPath.addLine(to: CGPoint(x: x4, y: y4))
-  }
-}
-
-private func buildExpansion(
-  _ startAngle: Double,
-  _ endAngle: Double,
-  _ center: CGPoint,
-  _ radius: CGFloat,
-  _ bezierPath4: UIBezierPath
-) {
-  let r = startAngle - ((startAngle - endAngle) / 2)
-  let radians4 = Double(r) * Double.pi / 180.0
-  let osx = Double(center.x) + Double(radius / 4) * Double(cos(radians4))
-  let osy = Double(center.y) + Double(radius / 4) * sin(radians4)
-
-  bezierPath4.move(to: CGPoint(x: osx, y: osy))
-  let steps = (endAngle - startAngle) / 20.0
-  for angle in stride(from: startAngle, through: endAngle, by: steps) {
-    let radians4 = Double(angle) * Double.pi / 180.0
-    let x4 = Double(center.x) + Double(radius) * Double(cos(radians4))
-    let y4 = Double(center.y) + Double(radius) * sin(radians4)
-    bezierPath4.addLine(to: CGPoint(x: x4 + osx, y: y4 + osy))
   }
 }
 

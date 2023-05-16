@@ -10,6 +10,8 @@
 		8FC234D829CF19E700E99980 /* Parser in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC234D729CF19E700E99980 /* Parser */; };
 		8FC234DE29CF47BD00E99980 /* SwiftyXMLParser in Frameworks */ = {isa = PBXBuildFile; productRef = 8FC234DD29CF47BD00E99980 /* SwiftyXMLParser */; };
 		9D1595BC29DF534D00E36DD4 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1595BB29DF534D00E36DD4 /* SettingsViewModel.swift */; };
+		9D55B99F2A1408DC007C149B /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D55B99E2A1408DC007C149B /* SettingsCoordinator.swift */; };
+		9D55B9A12A140AB2007C149B /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D55B9A02A140AB2007C149B /* Action.swift */; };
 		9DB353F529B56D3200B35F36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F429B56D3200B35F36 /* AppDelegate.swift */; };
 		9DB353F729B56D3200B35F36 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F629B56D3200B35F36 /* SceneDelegate.swift */; };
 		9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB353F829B56D3200B35F36 /* ARViewController.swift */; };
@@ -31,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		9D1595BB29DF534D00E36DD4 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		9D55B99E2A1408DC007C149B /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
+		9D55B9A02A140AB2007C149B /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		9DB353F129B56D3200B35F36 /* ARDiagrams.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARDiagrams.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DB353F429B56D3200B35F36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DB353F629B56D3200B35F36 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 			children = (
 				9DB3541229B570C100B35F36 /* SettingsView.swift */,
 				9D1595BB29DF534D00E36DD4 /* SettingsViewModel.swift */,
+				9D55B99E2A1408DC007C149B /* SettingsCoordinator.swift */,
 			);
 			path = SettingsScene;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 			children = (
 				9DE9AB922A013151003E8AFF /* Binding+Extensions.swift */,
 				9DE9AB942A013E9C003E8AFF /* View+Extensions.swift */,
+				9D55B9A02A140AB2007C149B /* Action.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -245,6 +251,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9DB3540F29B56F9500B35F36 /* Coordinator.swift in Sources */,
+				9D55B9A12A140AB2007C149B /* Action.swift in Sources */,
+				9D55B99F2A1408DC007C149B /* SettingsCoordinator.swift in Sources */,
 				9DB353F929B56D3200B35F36 /* ARViewController.swift in Sources */,
 				9DE9AB952A013E9C003E8AFF /* View+Extensions.swift in Sources */,
 				9DB3541129B56FCD00B35F36 /* AppCoordinator.swift in Sources */,
