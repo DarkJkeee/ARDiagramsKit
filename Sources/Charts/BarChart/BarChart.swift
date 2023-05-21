@@ -45,8 +45,10 @@ public final class BarChart: SCNNode, Chart {
     guard let maxNumberOfIndexes = Array(0..<model.values.count).map({ model.values[$0].count }).max(),
           model.values.count > 0, minValue < maxValue else { return }
 
-    let totalGapForSeries = getTotalGap(for: model.values.count)
-    let totalGapForIndexes = getTotalGap(for: maxNumberOfIndexes)
+    let totalGapForSeries: Float
+      = Array(0..<model.values.count).reduce(0, { resSum, _ in resSum + 0.5 })
+    let totalGapForIndexes: Float
+      = Array(0..<maxNumberOfIndexes).reduce(0, { resSum, _ in resSum + 0.5 })
 
     let platformNode = Platform(
       width: CGFloat(model.size.x),
@@ -57,8 +59,8 @@ public final class BarChart: SCNNode, Chart {
     let maxBarHeight = model.size.y / Float(maxValue - minValue)
     let barLength = model.size.z / (Float(model.values.count) + totalGapForSeries)
 
-    let shiftX = model.size.x / -2
-    let shiftZ = model.size.z / -2
+    let shiftX = -(model.size.x / 2)
+    let shiftZ = -(model.size.z / 2)
 
     var previousZ: Float = 0.0
     for series in 0..<model.values.count {
@@ -67,6 +69,21 @@ public final class BarChart: SCNNode, Chart {
       
       for index in 0..<model.values[series].count {
         let value = Float(model.values[series][index]) * maxBarHeight
+        let position = previousX + barWidth + barWidth * (index == 0 ? 0 : 0.5)
+        if series == 0, index < model.indexLabels.count {
+          let (indexLabelNode, scaledLabelHeight) = makeAxesLabel(
+            text: model.indexLabels[index],
+            width: model.size.z * 0.3,
+            height: barWidth
+          )
+          indexLabelNode.position = SCNVector3(
+            x: position + shiftX + (barWidth - scaledLabelHeight) - 0.5 * barWidth,
+            y: 0.0,
+            z: -0.8 * model.size.z
+          )
+          indexLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, -0.5 * Float.pi, 0.0)
+          addChildNode(indexLabelNode)
+        }
 
         let barNode = Bar(
           width: CGFloat(barWidth),
@@ -76,22 +93,30 @@ public final class BarChart: SCNNode, Chart {
           series: series,
           color: model.colors[(series * model.values[series].count + index) % model.colors.count]
         )
-        barNode.opacity = opacity
         platformNode.addChildNode(barNode)
 
-        let positionX = previousX + barWidth + barWidth * (index == 0 ? 0 : 0.5)
         barNode.position = SCNVector3(
-          x: positionX + shiftX, y: 0.5 * value, z: positionZ + shiftZ
+          x: position + shiftX, y: 0.5 * value, z: positionZ + shiftZ
         )
-
-        if series == 0 {
-          addLabel(forIndex: index, atXPosition: positionX + shiftX, withMaxHeight: barWidth)
-        }
         
-        previousX = positionX
+        previousX = position
       }
-      
-      addLabel(forSeries: series, atZPosition: positionZ + shiftZ, withMaxHeight: barLength)
+
+      if series < model.seriesLabels.count {
+        let (seriesLabelNode, scaledLabelHeight) = makeAxesLabel(
+          text: model.seriesLabels[series],
+          width: model.size.x * 0.3,
+          height: barLength
+        )
+        seriesLabelNode.position = SCNVector3(
+          x: -0.8 * model.size.x,
+          y: 0.0,
+          z: positionZ + shiftZ + 0.5 * barLength - (barLength - scaledLabelHeight)
+        )
+        seriesLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, 0.0, 0.0)
+        addChildNode(seriesLabelNode)
+      }
+
       previousZ = positionZ
     }
     self.platformNode = platformNode
@@ -129,58 +154,18 @@ public final class BarChart: SCNNode, Chart {
     highlight(barNode: highlightedBarNode, highlight: false)
     highlightedBarNode = nil
   }
-
-  private func getTotalGap(for number: Int) -> Float {
-    return Array(0..<number).reduce(0, { partialResult, _ -> Float in
-      partialResult + 0.5
-    })
-  }
-
-  private func addLabel(forSeries series: Int, atZPosition zPosition: Float, withMaxHeight maxHeight: Float) {
-    if series < model.seriesLabels.count {
-      let seriesLabelNode = Label(text: model.seriesLabels[series])
-
-      let unscaledLabelWidth = seriesLabelNode.boundingBox.max.x - seriesLabelNode.boundingBox.min.x
-      let desiredLabelWidth = model.size.x * 0.3
-      let unscaledLabelHeight = seriesLabelNode.boundingBox.max.y - seriesLabelNode.boundingBox.min.y
-      let labelScale = min(desiredLabelWidth / unscaledLabelWidth, maxHeight / unscaledLabelHeight)
-      seriesLabelNode.scale = SCNVector3(labelScale, labelScale, labelScale)
-
-      let zShift = 0.5 * maxHeight - (maxHeight - labelScale * unscaledLabelHeight)
-      seriesLabelNode.position = SCNVector3(
-        x: -0.8 * model.size.x,
-        y: 0.0,
-        z: zPosition + zShift
-      )
-      seriesLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, 0.0, 0.0)
-
-      addChildNode(seriesLabelNode)
-    }
-  }
-
-  private func addLabel(forIndex index: Int, atXPosition xPosition: Float, withMaxHeight maxHeight: Float) {
-    if index < model.indexLabels.count {
-      let indexLabelNode = Label(text: model.indexLabels[index])
-
-      let unscaledLabelWidth = indexLabelNode.boundingBox.max.x - indexLabelNode.boundingBox.min.x
-      let desiredLabelWidth = model.size.z * 0.3
-      let unscaledLabelHeight = indexLabelNode.boundingBox.max.y - indexLabelNode.boundingBox.min.y
-      let labelScale = min(desiredLabelWidth / unscaledLabelWidth, maxHeight / unscaledLabelHeight)
-      indexLabelNode.scale = SCNVector3(labelScale, labelScale, labelScale)
-
-      let xShift = (maxHeight - labelScale * unscaledLabelHeight) - 0.5 * maxHeight
-      indexLabelNode.position = SCNVector3(
-        x: xPosition + xShift,
-        y: 0.0,
-        z: -0.8 * model.size.z
-      )
-      indexLabelNode.eulerAngles = SCNVector3(-0.5 * Float.pi, -0.5 * Float.pi, 0.0)
-
-      addChildNode(indexLabelNode)
-    }
-  }
 }
 
+private func makeAxesLabel(text: String, width: Float, height: Float) -> (Label, Float) {
+  let label = Label(text: text)
+
+  let unscaledLabelWidth = label.boundingBox.max.x - label.boundingBox.min.x
+  let unscaledLabelHeight = label.boundingBox.max.y - label.boundingBox.min.y
+  let labelScale = min(width / unscaledLabelWidth, height / unscaledLabelHeight)
+  label.scale = SCNVector3(labelScale, labelScale, labelScale)
+
+  return (label, labelScale * unscaledLabelHeight)
+}
 
 private func makeAnimation(keyPath: String, from: Double, to: Double) -> CABasicAnimation {
   let animation = CABasicAnimation(keyPath: keyPath)

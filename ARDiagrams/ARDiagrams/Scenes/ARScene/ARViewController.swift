@@ -17,11 +17,6 @@ import Parser
 import SmartHitTest
 
 final class ARViewController: UIViewController {
-  private struct SharedData: Codable {
-    let sharedChart: Data?
-    let sharedCollaborationData: Data
-  }
-
   weak var coordinator: AppCoordinator?
 
   private lazy var sceneView = ARSCNView(frame: .zero)
@@ -62,6 +57,9 @@ final class ARViewController: UIViewController {
   private var chart: Chart?
   private var chartModel: ChartModel? {
     didSet {
+      if oldValue != chartModel {
+        sendChartToAllPeers()
+      }
       chart?.chartModel = chartModel
       DispatchQueue.main.async { [weak self] in
         guard let self = self else { return }
@@ -205,8 +203,6 @@ final class ARViewController: UIViewController {
     guard let chartModel else { return }
     coordinator?.openSettings(model: chartModel, saveChanges: { [weak self] in
       self?.chartModel = $0
-      self?.chart?.reset()
-      self?.chart?.removeFromParentNode()
     })
   }
 
@@ -282,18 +278,15 @@ extension ARViewController: ARSessionDelegate {
   func receivedData(_ data: Data, from peer: PeerID) {
     guard let multipeerSession = multipeerSession else { return }
 
-    if let sharedData = try? JSONDecoder().decode(SharedData.self, from: data) {
-      if let sharedChart = sharedData.sharedChart,
-         let decodedChartData = try? JSONDecoder().decode(ChartModel.self, from: sharedChart) {
-        self.chart = extractChart(from: decodedChartData)
-        chartModel = decodedChartData
-      }
-      if let decodedCollaborationData = try? NSKeyedUnarchiver.unarchivedObject(
-        ofClass: ARSession.CollaborationData.self,
-        from: sharedData.sharedCollaborationData
-      ) {
-        sceneView.session.update(with: decodedCollaborationData)
-      }
+    if let decodedCollaborationData = try? NSKeyedUnarchiver.unarchivedObject(
+      ofClass: ARSession.CollaborationData.self,
+      from: data
+    ) {
+      sceneView.session.update(with: decodedCollaborationData)
+    }
+    else if let decodedChartData = try? JSONDecoder().decode(ChartModel.self, from: data) {
+      self.chart = extractChart(from: decodedChartData)
+      chartModel = decodedChartData
     }
 
     let sessionIDCommandString = "SessionID:"
@@ -360,23 +353,21 @@ extension ARViewController: ARSessionDelegate {
     }
   }
 
+  private func sendChartToAllPeers() {
+    guard let encodedChartData = try? JSONEncoder().encode(chartModel) else { return }
+    multipeerSession?.sendToAllPeers(encodedChartData, reliably: true)
+  }
+
   func session(_ session: ARSession, didOutputCollaborationData data: ARSession.CollaborationData) {
     guard let multipeerSession = multipeerSession else { return }
     if !multipeerSession.connectedPeers.isEmpty {
-      guard let encodedCollaborationData = try? NSKeyedArchiver.archivedData(withRootObject: data, requiringSecureCoding: true),
-            let encodedChartData = try? JSONEncoder().encode(chartModel),
-            let sharedChart = try? JSONEncoder().encode(
-              SharedData(
-                sharedChart: encodedChartData,
-                sharedCollaborationData: encodedCollaborationData
-              )
-            )
+      guard let encodedCollaborationData = try? NSKeyedArchiver.archivedData(withRootObject: data, requiringSecureCoding: true)
       else { fatalError("Unexpectedly failed to encode collaboration data.") }
       // Use reliable mode if the data is critical, and unreliable mode if the data is optional.
       let dataIsCritical = data.priority == .critical
-      multipeerSession.sendToAllPeers(sharedChart, reliably: dataIsCritical)
+      multipeerSession.sendToAllPeers(encodedCollaborationData, reliably: dataIsCritical)
     } else {
-        print("Deferred sending collaboration to later because there are no peers.")
+      print("Deferred sending collaboration to later because there are no peers.")
     }
   }
 
